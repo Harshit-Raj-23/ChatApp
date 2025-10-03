@@ -192,4 +192,33 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     }
 });
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken };
+// get other users
+const getOtherUsers = asyncHandler(async (req, res) => {
+    try {
+        const loggedInUserId = req.user._id;
+        const otherUsers = await User.find({
+            _id: {
+                $ne: loggedInUserId,
+            },
+        }).select("-password -refreshToken");
+        return res.status(200).json(
+            new ApiResponse(
+                200,
+                {
+                    otherUsers,
+                },
+                "All users except logged in user returned."
+            )
+        );
+    } catch (error) {
+        throw new ApiError(400, error?.message || "Invalid request.");
+    }
+});
+
+export {
+    registerUser,
+    loginUser,
+    logoutUser,
+    refreshAccessToken,
+    getOtherUsers,
+};
