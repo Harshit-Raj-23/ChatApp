@@ -35,6 +35,16 @@ const sendMessage = asyncHandler(async (req, res) => {
     await Promise.all([gotConversation.save(), newMessage.save]);
 
     // SOCKET IO (Later)
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            {
+                newMessage,
+            },
+            "Message sent successfully"
+        )
+    );
 });
 
 // get message
